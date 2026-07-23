@@ -1,0 +1,13 @@
+{
+  "name": "hush",
+  "version": "1.0.0",
+  "description": "Secure ephemeral secret text sharing",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev",
+    "deploy": "wrangler pages deploy public --project-name hush"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

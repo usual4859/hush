@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <meta
+            name="description"
+            content="Hush encrypts your text in the browser before it ever leaves your device. Share a link that self-destructs after a set time or first view — we never see the plaintext."
+        />
+        <meta name="robots" content="index, follow" />
+        <title>Hush — Encrypted, Self-Destructing Secret Sharing</title>
+
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <meta name="theme-color" content="#0a0a0a" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Hush — Encrypted, Self-Destructing Secret Sharing" />
+        <meta
+            property="og:description"
+            content="Hush encrypts your text in the browser before it ever leaves your device. Share a link that self-destructs after a set time or first view — we never see the plaintext."
+        />
+        <meta property="og:image" content="/favicon.svg" />
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Hush — Encrypted, Self-Destructing Secret Sharing" />
+        <meta
+            name="twitter:description"
+            content="Hush encrypts your text in the browser before it ever leaves your device. Share a link that self-destructs after a set time or first view."
+        />
+        <meta name="twitter:image" content="/favicon.svg" />
+
+        <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <a href="/" class="brand">
+                    <svg
+                        class="brand-mark"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <polygon
+                            points="22.16 9.6 19.16 4.4 15 6.8 15 2 9 2 9 6.8 4.84 4.4 1.84 9.6 6 12 1.84 14.4 4.84 19.6 9 17.2 9 22 15 22 15 17.2 19.16 19.6 22.16 14.4 18 12 22.16 9.6"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-miterlimit="10"
+                        />
+                    </svg>
+                    <h1>Hush</h1>
+                </a>
+                <p class="tagline">Secure ephemeral secret sharing</p>
+            </header>
+
+            <main id="main-view">
+                <div id="error-alert" class="alert alert-error hidden"></div>
+
+                <div id="passphrase-gate" class="card passphrase-gate">
+                    <h2>Unlock Secret Creation</h2>
+                    <div class="form-group">
+                        <input
+                            type="password"
+                            id="passphrase-input"
+                            placeholder="Passphrase"
+                            autocomplete="off"
+                        />
+                    </div>
+                    <div id="passphrase-error" class="passphrase-error hidden"></div>
+                    <button type="button" id="unlock-btn" class="btn btn-primary">
+                        Unlock
+                    </button>
+                </div>
+
+                <form id="create-form" class="card hidden">
+                    <div class="form-group">
+                        <label for="title">Title (optional)</label>
+                        <input
+                            type="text"
+                            id="title"
+                            placeholder="e.g., API Key, Password Reset Link"
+                            maxlength="100"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="secret">Secret Text</label>
+                        <textarea
+                            id="secret"
+                            placeholder="Enter sensitive text here. Will be encrypted before upload."
+                            required
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="char-count">0</span> /
+                            <span id="char-max">50000</span> bytes
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expires in</label>
+                            <div class="custom-dropdown">
+                                <button
+                                    type="button"
+                                    class="dropdown-trigger"
+                                    id="expiry-trigger"
+                                >
+                                    1 hour
+                                </button>
+                                <div class="dropdown-menu" id="expiry-menu">
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="600"
+                                    >
+                                        10 minutes
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item active"
+                                        data-value="3600"
+                                    >
+                                        1 hour
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="43200"
+                                    >
+                                        12 hours
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="86400"
+                                    >
+                                        24 hours
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="259200"
+                                    >
+                                        3 days
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="604800"
+                                    >
+                                        7 days
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="expiry" value="3600" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Views Allowed</label>
+                            <div class="custom-dropdown">
+                                <button
+                                    type="button"
+                                    class="dropdown-trigger"
+                                    id="views-trigger"
+                                >
+                                    Unlimited
+                                </button>
+                                <div class="dropdown-menu" id="views-menu">
+                                    <button
+                                        type="button"
+                                        class="dropdown-item active"
+                                        data-value="0"
+                                    >
+                                        Unlimited
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="1"
+                                    >
+                                        1 view
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="3"
+                                    >
+                                        3 views
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-value="5"
+                                    >
+                                        5 views
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="max-views" value="0" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <span class="spinner hidden" id="submit-spinner"></span>
+                        <span id="submit-btn-text">Create Secret</span>
+                    </button>
+                    <p class="form-disclaimer">
+                        By creating a secret, you agree to our
+                        <button type="button" class="link-btn" id="open-legal">Terms and Privacy Policy</button>.
+                        Your data is encrypted end-to-end. You are solely responsible for what
+                        you share and its consequences.
+                    </p>
+                </form>
+            </main>
+
+            <div id="result-view" class="hidden">
+                <div class="card">
+                    <h2>Secret Created</h2>
+                    <div class="share-info">
+                        <p>Share this link</p>
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="share-url"
+                                readonly
+                            />
+                            <button
+                                type="button"
+                                id="copy-btn"
+                                class="btn btn-secondary"
+                            >
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="expiry-info">
+                        <p>Expires: <strong id="expiry-time"></strong></p>
+                        <p id="view-limit-note" class="hidden">
+                            ⚠ <span id="view-limit-text"></span>
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="new-secret-btn"
+                        class="btn btn-primary"
+                    >
+                        Create Another
+                    </button>
+                </div>
+            </div>
+
+            <footer>
+                <p>Encrypted in your browser. We never see your secret.</p>
+            </footer>
+
+            <div id="legal-modal" class="modal hidden">
+                <div class="modal-content">
+                    <button type="button" class="modal-close" id="close-legal">✕</button>
+                    <h2>Terms & Privacy</h2>
+                    <div class="modal-body">
+                        <h3>Privacy</h3>
+                        <p>
+                            Your secret is encrypted before it leaves your browser. We only ever
+                            store the encrypted blob, not the plaintext, and collect no personal
+                            data or tracking cookies. We cannot decrypt or read the contents of
+                            any secret, and therefore cannot monitor, moderate, or preview what
+                            is shared — moderation is limited to the abuse-report mechanism, which
+                            deletes the reported secret without our ever viewing its contents.
+                        </p>
+                        <h3>Terms</h3>
+                        <p>
+                            This tool is provided for personal and educational use. You must be
+                            at least 18, or the age of majority in your jurisdiction, to use it.
+                            You're solely responsible for what you share, who you share it with,
+                            and any consequences that result — don't use it to store or distribute
+                            illegal content, malware, or material that infringes on others' rights.
+                            We reserve the right to delete any secret, without notice, if reported
+                            or reasonably suspected of violating these terms.
+                        </p>
+                        <h3>Disclaimer &amp; Limitation of Liability</h3>
+                        <p>
+                            Provided as-is and as-available, with no warranty of any kind, express
+                            or implied. Deletion on expiry or view-limit is best-effort, not
+                            guaranteed. Use at your own risk — don't rely on this for regulated,
+                            legally privileged, or highly sensitive data. To the fullest extent
+                            permitted by law, we are not liable for any damages, loss, or harm
+                            arising from your use of this service, including loss of data or
+                            unauthorized access to a shared secret.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/app.js"></script>
+    </body>
+</html>

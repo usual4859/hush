@@ -1,0 +1,18 @@
+name = "hush"
+compatibility_date = "2024-12-12"
+pages_build_output_dir = "public"
+
+# KV namespace bindings
+[[kv_namespaces]]
+binding = "HUSH_STORE"
+id = "YOUR_KV_NAMESPACE_ID"
+preview_id = "YOUR_KV_PREVIEW_NAMESPACE_ID"
+
+# Environment variables
+[vars]
+SECRET_MAX_LENGTH = "51200"
+DEFAULT_EXPIRY = "3600"
+PUBLIC_URL = "https://your-domain.com"
+
+# Note: Set HUSH_CREATE_PASSWORD in Cloudflare Pages → Settings → Environment Variables
+# after deployment
